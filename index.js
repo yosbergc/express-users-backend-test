@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors')
 const app = express()
+const process = require('process')
 app.use(express.json())
 app.use(cors())
 let lista = [
@@ -59,6 +60,6 @@ app.post('/api/users', (req, res) => {
     const note = req.body
     res.json(note)
 })
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 app.listen(PORT)
 console.log('Servidor iniciado.')
