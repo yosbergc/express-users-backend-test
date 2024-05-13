@@ -21,6 +21,20 @@ app.get('/api/users', (req, res) => {
             res.status(401).json({error: error}).end()
         })
 })
+app.delete('/api/users/:id', (req, res, next) => {
+    const id = req.params.id
+    if (!id) {
+        return res.status(401).send({error: "The ID we got it's invalid/doesn't exist"}).end()
+    }
+    User.findByIdAndDelete(id)
+    .then(response => {
+        res.status(200).json(response)
+    })
+    .catch(error => {
+        next(error)
+    })
+})
+
 app.post('/api/users', (req, res) => {
     const userInfo = req.body
     if (!userInfo) {
@@ -41,6 +55,13 @@ app.post('/api/users', (req, res) => {
     .catch(error => {
         res.status(401).json({error: error.message}).end()
     })
+})
+app.use((error, req, res, next) => {
+    if (error.name === "CastError") {
+        return res.status(400).send({error: "Hubo un error con la ID recibida"}).end()
+    } else {
+        next()
+    }
 })
 app.use((req, res) => {
     res.status(404).json({error: "No encontrado"}).end()
